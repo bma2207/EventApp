@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="event-grid" title="Event" model="com.axelor.event.db.Event">
+		<field name="reference" />
+		<field name="startDateT" />
+		<field name="endDateT" />
+		<field name="address" css="address-list" />
+		<field name="registrationOpenDate" />
+		<field name="registrationCloseDate" />
+		<field name="capacity" />
+		<field name="eventFees" />
+		<field name="description" widget="html" />
+		<field name="discountList" />
+		<field name="eventRegistrationList" />
+		<field name="totalEntry" />
+		<field name="amountCollected" />
+		<field name="totalDiscount" />
+	</grid>
+
+	<calendar name="event-calendar" title="Event Calendars"
+		model="com.axelor.event.db.Event" colorBy="reference" eventStart="startDateT"
+		eventStop="endDateT" eventLength="6">
+		<field name="reference" />
+	</calendar>
+
+	<cards name="event-cards" title="Event Card View" model="com.axelor.event.db.Event">
+		<field name="reference" />
+		<field name="startDateT" />
+		<field name="endDateT" />
+		<field name="registrationOpenDate" />
+		<field name="registrationCloseDate" />
+		<field name="capacity" />
+		<field name="eventFees" />
+		<template><![CDATA[
+ 	<div class="span4 card-image">
+      <img ng-if="hasImage" ng-src="{{$image(null, 'image')}}">
+      <img ng-if="!hasImage" src="img/user.png" >
+      <strong>{{name}}</strong>
+    </div>
+    <div class="span8">
+       <address>
+          <strong>Event:{{reference}} <br>
+          Start Date:{{startDateT}}<br>
+          End Date:{{endDateT}} </span><br>
+          Registration Open :{{registrationOpenDate}}<br>
+       	  Registration Close :{{registrationCloseDate}}<br>
+       	  Event Fee:{{eventFees}} </span><br>
+          Capacity:{{capacity}}<br></strong>
+        </address>
+    </div>
+  ]]></template>
+	</cards>
+
+	<form name="event-form" title="Event" model="com.axelor.event.db.Event"
+		onSave="action-group-onSave" onLoad="action-attrs-total-entry">
+		<toolbar>
+			<button name="showEvent" title="Event Details" icon="fa-print"
+				onClick="action-event-report" readonlyIf="!id"/>
+			<button name="import" title="Import" icon="fa-print"
+				onClick="action-base-view-import-event-popup" readonlyIf="!id"/>
+			<button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+				onClick="action-send-by-email-method-event-registration" readonlyIf="!id"/>
+		</toolbar>
+
+		<panel title="Overview">
+			<field name="reference" />
+			<field name="startDateT" onChange="action-event-Startdate-validate" />
+			<field name="endDateT" onChange="action-event-Enddate-validate"
+				help="Start date should not be ahead of EndDate." />
+			<field name="address" colSpan="12" css="address-list">
+				<viewer><![CDATA[
+        <address>
+        {{record.beforeDays}} {{record.discountPercent}}<br>
+        {{record.discountAmount}}, {{record.flatHouseNo}}<br>
+        {{record.street}} {{record.landMark}}<br>
+        {{record.city}}, {{record.country}}<br>
+        {{record.fullName}}
+        </address>
+        ]]>
+        </viewer>
+				<editor x-show-titles="false">
+
+					<field name="flatHouseNo" />
+					<field name="street" />
+					<field name="landMark" />
+					<field name="city" />
+					<field name="country" />
+					<field name="fullName" />
+				</editor>
+			</field>
+			<field name="registrationOpenDate" onChange="action-event-registrationOpen-date-validate,save" />
+			<field name="registrationCloseDate" onChange="action-event-registrationClose-date-validate"
+				help="Registration Open date should not be ahead of Registration Close Date." />
+			<field name="capacity" onChange="save" />
+			<field name="totalEntry" onChange="save" />
+			<field name="eventFees" />
+			<field name="description" widget="html" colSpan="12" />
+			<field name="discountList" onChange="save" colSpan="12" />
+			<field name="eventRegistrationList" onChange="action-group-onchangeeventRegistration"
+				domain="self.event =:reference" hideIf="reference == null &amp;&amp; capacity != 0 "
+				colSpan="12" canNew="capacity != totalEntry" />
+			<field name="amountCollected" />
+			<field name="totalDiscount" />
+		</panel>
+	</form>
+
+	<form name="wizard-import-event-form" title="Import Event"
+		model="com.axelor.event.db.Event">
+		<panel name="wizardPanel">
+
+			<field name="metaFile" title="Input file" type="many-to-one"
+				target="com.axelor.meta.db.MetaFile" widget="binary-link" />
+			<button name="importBtn" colSpan="4" title="Import"
+				onClick="action-method-import-registration" />
+		</panel>
+	</form>
+
+	<action-view name="action-base-view-import-event-popup"
+		title="Import Event" model="com.axelor.event.db.Event">
+		<view type="form" name="wizard-import-event-form" />
+		<view-param name="show-toolbar" value="false" />
+		<view-param name="width" value="800" />
+		<view-param name="popup" value="true" />
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false" />
+		<view-param name="popup" value="reload" />
+	</action-view>
+
+	<action-validate name="action-event-Startdate-validate">
+		<error message="Start date should not be ahead of EndDate."
+			if="startDate &gt; endDateT  &amp;&amp;  endDateT != null" />
+		<error message="Registration close date must be befor event Start."
+			if=" registrationCloseDate != null  &amp;&amp; registrationCloseDate &gt; startDateT.toLocalDate()   " />
+	</action-validate>
+
+	<action-validate name="action-event-Enddate-validate">
+		<error message="EndDate should not be ahead of startDate."
+			if="startDateT != null &amp;&amp; startDateT &gt; endDateT" />
+	</action-validate>
+
+	<action-validate name="action-event-registrationOpen-date-validate">
+		<error
+			message="Registration Open date should not be ahead of Registration Close Date."
+			if="registrationCloseDate != null  &amp;&amp; registrationOpenDate &gt; registrationCloseDate" />
+	</action-validate>
+
+	<action-validate name="action-event-registrationClose-date-validate">
+		<error
+			message="Registration Close Date should not be Less than Registration Open date."
+			if="registrationOpenDate != null &amp;&amp; registrationOpenDate &gt; registrationCloseDate" />
+		<error message="Registration close date must be befor event Start."
+			if="startDateT != null &amp;&amp; registrationCloseDate &gt; startDateT.toLocalDate()" />
+	</action-validate>
+
+	<action-condition name="action-event-capacity">
+		<check field="totalEntry" />
+		<check field="capacity" />
+		<check field="totalEntry" if="totalEntry &gt; capacity" error="Registration is close." />
+	</action-condition>
+
+	<action-group name="action-group-onSave">
+		<action name="action-event-Startdate-validate" />
+		<action name="action-event-Enddate-validate" />
+		<action name="action-event-registrationOpen-date-validate" />
+		<action name="action-event-registrationClose-date-validate" />
+		<action name="action-event-capacity" />
+		<action name="save" />
+	</action-group>
+
+	<action-group name="action-group-onchangeeventRegistration">
+		<action name="action-attrs-total-entry" />
+		<action name="action-method-event-registration-culculation" />
+		<action name="action-event-capacity" />
+	</action-group>
+
+	<action-method name="action-method-event-registration-culculation">
+		<call class="com.axelor.event.web.EventController" method="totalDiscount" />
+	</action-method>
+
+	<action-attrs name="action-attrs-total-entry">
+		<attribute name="value" for="totalEntry" expr="eval:eventRegistrationList?.size()"
+			if="eval:eventRegistrationList?.size() &lt;= capacity " />
+	</action-attrs>
+
+	<action-report name="action-event-report" design="event_report.rptdesign"
+		output="Event-${date}${time}" format="pdf">
+		<param name="param" expr="eval:id" />
+	</action-report>
+
+	<action-method name="action-method-import-registration">
+		<call class="com.axelor.event.web.ImpostCsv"
+			method="importRegistration" />
+	</action-method>
+		<action-method name="action-send-by-email-method-event-registration">
+		<call class="com.axelor.event.web.EventController"
+			method="sendEmail" />
+	</action-method>
+
+</object-views>

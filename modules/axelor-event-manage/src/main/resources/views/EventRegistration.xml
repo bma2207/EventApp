@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="eventRegistration-grid" title="EventRegistration"
+		model="com.axelor.event.db.EventRegistration">
+		<field name="event" />
+		<field name="name" />
+		<field name="email" widget="email" />
+		<field name="address" css="address-list" />
+		<field name="capacity" />
+		<field name="registrationDateT" />
+		<field name="amount" />
+		<field name="isEmailSent" />
+	</grid>
+
+	<form name="eventRegistration-form" title="Event Registration"
+		model="com.axelor.event.db.EventRegistration" onSave="action-validation-check-totalEntry-capacity"
+		onNew="action-method-set-event">
+		<panel title="Overview">
+			<field name="event" onChange="action-validation-check-totalEntry-capacity" />
+			<field name="name" />
+			<field name="email" widget="email" />
+			<field name="address" colSpan="12" css="address-list">
+				<viewer><![CDATA[
+        <address>
+        {{record.beforeDays}} {{record.discountPercent}}<br>
+        {{record.discountAmount}}, {{record.flatHouseNo}}<br>
+        {{record.street}} {{record.landMark}}<br>
+        {{record.city}}, {{record.country}}<br>
+        {{record.fullName}}
+        </address>
+        ]]>
+        </viewer>
+				<editor x-show-titles="false">
+					<field name="flatHouseNo" />
+					<field name="street" />
+					<field name="landMark" />
+					<field name="city" />
+					<field name="country" />
+					<field name="fullName" />
+				</editor>
+			</field>
+			<field name="registrationDateT"
+				onChange="action-event-registratin-group-onChange-registrationDate" />
+			<field name="amount" />
+			<field name="isEmailSent" />
+		</panel>
+	</form>
+
+	<action-validate name="action-event-registration-date-validate">
+		<error message="Registration Close Date Wrong."
+			if="event.registrationCloseDate &lt; registrationDateT.toLocalDate()  &amp;&amp;  event.registrationCloseDate != null " />
+		<error message="Registration Open date Wrong"
+			if="event.registrationOpenDate &gt; registrationDateT.toLocalDate()  &amp;&amp;  event.registrationOpenDate != null " />
+	</action-validate>
+
+	<action-validate name="action-validation-check-totalEntry-capacity">
+		<error message="Registration Full !!!" if="event.capacity == event.totalEntry" />
+	</action-validate>
+
+	<action-method name="action-set-amount">
+		<call class="com.axelor.event.web.EventController" method="compute" />
+	</action-method>
+
+	<action-method name="action-method-event-registration-event-set">
+		<call class="com.axelor.event.web.EventController" method="eventSet" />
+	</action-method>
+
+	<action-method name="action-method-set-event">
+		<call class="com.axelor.event.web.EventController" method="eventRegistartionList" />
+	</action-method>
+
+	<action-group
+		name="action-event-registratin-group-onChange-registrationDate">
+		<action name="action-event-registration-date-validate" />
+		<action name="action-set-amount" />
+	</action-group>
+
+</object-views>
