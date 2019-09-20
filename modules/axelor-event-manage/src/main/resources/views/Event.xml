@@ -56,14 +56,14 @@
 	</cards>
 
 	<form name="event-form" title="Event" model="com.axelor.event.db.Event"
-		onSave="action-group-onSave" onLoad="action-attrs-total-entry">
+		onSave="action-group-onSave" onLoad="action-attrs-total-entry,action-method-event-RegistrationList-CalculationOnImport,action-method-event-registration-culculation">
 		<toolbar>
 			<button name="showEvent" title="Event Details" icon="fa-print"
-				onClick="action-event-report" readonlyIf="!id"/>
+				onClick="action-event-report" readonlyIf="!id" />
 			<button name="import" title="Import" icon="fa-print"
-				onClick="action-base-view-import-event-popup" readonlyIf="!id"/>
+				onClick="action-base-view-import-event-popup" readonlyIf="!id" />
 			<button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
-				onClick="action-send-by-email-method-event-registration" readonlyIf="!id"/>
+				onClick="action-send-by-email-method-event-registration" readonlyIf="!id" />
 		</toolbar>
 
 		<panel title="Overview">
@@ -182,8 +182,8 @@
 	</action-method>
 
 	<action-attrs name="action-attrs-total-entry">
-		<attribute name="value" for="totalEntry" expr="eval:eventRegistrationList?.size()"
-			if="eval:eventRegistrationList?.size() &lt;= capacity " />
+		<attribute name="value" for="totalEntry"
+			expr="eval:eventRegistrationList?.size()" if="eval:eventRegistrationList?.size() &lt;= capacity " />
 	</action-attrs>
 
 	<action-report name="action-event-report" design="event_report.rptdesign"
@@ -192,12 +192,16 @@
 	</action-report>
 
 	<action-method name="action-method-import-registration">
-		<call class="com.axelor.event.web.ImpostCsv"
-			method="importRegistration" />
+		<call class="com.axelor.event.web.ImpostCsv" method="importRegistration" />
 	</action-method>
-		<action-method name="action-send-by-email-method-event-registration">
-		<call class="com.axelor.event.web.EventController"
-			method="sendEmail" />
+
+	<action-method name="action-send-by-email-method-event-registration">
+		<call class="com.axelor.event.web.EventController" method="sendEmail" />
+	</action-method>
+
+	<action-method
+		name="action-method-event-RegistrationList-CalculationOnImport">
+		<call class="com.axelor.event.web.EventController" method="eventRegistrationListCalculationOnImport" />
 	</action-method>
 
 </object-views>

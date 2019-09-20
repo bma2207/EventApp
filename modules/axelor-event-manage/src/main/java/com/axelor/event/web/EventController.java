@@ -65,6 +65,16 @@ public class EventController {
 		}
 
 	}
+	public void eventRegistrationListCalculationOnImport(ActionRequest request, ActionResponse response)
+	{
+		Event event=request.getContext().asType(Event.class);
+		if(event.getEventRegistrationList() != null)
+		{
+			
+			List<EventRegistration> enventRegistration=service.eventRegListCalculationOnimport(event);
+			response.setValue("eventRegistrationList", enventRegistration);
+		}
+	}
 
 	public void sendEmail(ActionRequest request, ActionResponse response) {
 

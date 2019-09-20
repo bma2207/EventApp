@@ -14,7 +14,6 @@ import com.axelor.rpc.ActionResponse;
 
 
 public class ImpostCsv {
-	
 	@Inject
 	ImportEventRegistrationService importEventRegistrationService;
 

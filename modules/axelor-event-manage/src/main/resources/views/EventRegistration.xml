@@ -19,7 +19,8 @@
 	<form name="eventRegistration-form" title="Event Registration"
 		model="com.axelor.event.db.EventRegistration" onSave="action-validation-check-totalEntry-capacity"
 		onNew="action-method-set-event">
-		<panel title="Overview">
+		
+		<panel title="Event Registration">
 			<field name="event" onChange="action-validation-check-totalEntry-capacity" />
 			<field name="name" />
 			<field name="email" widget="email" />
@@ -78,5 +79,5 @@
 		<action name="action-event-registration-date-validate" />
 		<action name="action-set-amount" />
 	</action-group>
-
+	
 </object-views>

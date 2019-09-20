@@ -57,28 +57,28 @@
                     <text-property name="heading">reference</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">start_date</property>
+                    <property name="columnName">start_datet</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">start_date</text-property>
-                    <text-property name="heading">start_date</text-property>
+                    <text-property name="displayName">start_datet</text-property>
+                    <text-property name="heading">start_datet</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">end_date</property>
+                    <property name="columnName">end_datet</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">end_date</text-property>
-                    <text-property name="heading">end_date</text-property>
+                    <text-property name="displayName">end_datet</text-property>
+                    <text-property name="heading">end_datet</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">registration_open</property>
+                    <property name="columnName">registration_open_date</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">registration_open</text-property>
-                    <text-property name="heading">registration_open</text-property>
+                    <text-property name="displayName">registration_open_date</text-property>
+                    <text-property name="heading">registration_open_date</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">registration_close</property>
+                    <property name="columnName">registration_close_date</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">registration_close</text-property>
-                    <text-property name="heading">registration_close</text-property>
+                    <text-property name="displayName">registration_close_date</text-property>
+                    <text-property name="heading">registration_close_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">name</property>
@@ -127,22 +127,22 @@
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">start_date</property>
+                        <property name="name">start_datet</property>
                         <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">end_date</property>
+                        <property name="name">end_datet</property>
                         <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">registration_open</property>
+                        <property name="name">registration_open_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">registration_close</property>
+                        <property name="name">registration_close_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
@@ -178,29 +178,29 @@
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">start_date</property>
-                    <property name="nativeName">start_date</property>
+                    <property name="name">start_datet</property>
+                    <property name="nativeName">start_datet</property>
                     <property name="dataType">date-time</property>
                     <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">end_date</property>
-                    <property name="nativeName">end_date</property>
+                    <property name="name">end_datet</property>
+                    <property name="nativeName">end_datet</property>
                     <property name="dataType">date-time</property>
                     <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">registration_open</property>
-                    <property name="nativeName">registration_open</property>
+                    <property name="name">registration_open_date</property>
+                    <property name="nativeName">registration_open_date</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">registration_close</property>
-                    <property name="nativeName">registration_close</property>
+                    <property name="name">registration_close_date</property>
+                    <property name="nativeName">registration_close_date</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
@@ -233,7 +233,7 @@
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select event.reference,event.start_date,event.end_date,event.registration_open,event.registration_close,
+            <xml-property name="queryText"><![CDATA[select event.reference,event.start_datet,event.end_datet,event.registration_open_date,event.registration_close_date,
 registration.name,registration.email,registration.address,registration.amount from 
 event_event event inner join event_event_registration registration on registration.event = event.id
 where event.id = ?]]></xml-property>
@@ -264,27 +264,27 @@ where event.id = ?]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">start_date</property>
-                    <text-property name="displayName">start_date</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["start_date"]</expression>
+                    <property name="name">start_datet</property>
+                    <text-property name="displayName">start_datet</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["start_datet"]</expression>
                     <property name="dataType">date-time</property>
                 </structure>
                 <structure>
-                    <property name="name">end_date</property>
-                    <text-property name="displayName">end_date</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["end_date"]</expression>
+                    <property name="name">end_datet</property>
+                    <text-property name="displayName">end_datet</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["end_datet"]</expression>
                     <property name="dataType">date-time</property>
                 </structure>
                 <structure>
-                    <property name="name">registration_open</property>
-                    <text-property name="displayName">registration_open</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["registration_open"]</expression>
+                    <property name="name">registration_open_date</property>
+                    <text-property name="displayName">registration_open_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["registration_open_date"]</expression>
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
-                    <property name="name">registration_close</property>
-                    <text-property name="displayName">registration_close</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["registration_close"]</expression>
+                    <property name="name">registration_close_date</property>
+                    <text-property name="displayName">registration_close_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["registration_close_date"]</expression>
                     <property name="dataType">date</property>
                 </structure>
             </list-property>
@@ -325,7 +325,7 @@ where event.id = ?]]></xml-property>
                     </label>
                 </cell>
                 <cell id="68">
-                    <data id="172">
+                    <data id="178">
                         <property name="resultSetColumn">reference</property>
                     </data>
                 </cell>
@@ -338,8 +338,8 @@ where event.id = ?]]></xml-property>
                     </label>
                 </cell>
                 <cell id="71">
-                    <data id="173">
-                        <property name="resultSetColumn">start_date</property>
+                    <data id="179">
+                        <property name="resultSetColumn">start_datet</property>
                     </data>
                 </cell>
             </row>
@@ -351,8 +351,8 @@ where event.id = ?]]></xml-property>
                     </label>
                 </cell>
                 <cell id="74">
-                    <data id="174">
-                        <property name="resultSetColumn">end_date</property>
+                    <data id="180">
+                        <property name="resultSetColumn">end_datet</property>
                     </data>
                 </cell>
             </row>
@@ -364,8 +364,8 @@ where event.id = ?]]></xml-property>
                     </label>
                 </cell>
                 <cell id="77">
-                    <data id="175">
-                        <property name="resultSetColumn">registration_open</property>
+                    <data id="181">
+                        <property name="resultSetColumn">registration_open_date</property>
                     </data>
                 </cell>
             </row>
@@ -377,8 +377,8 @@ where event.id = ?]]></xml-property>
                     </label>
                 </cell>
                 <cell id="80">
-                    <data id="176">
-                        <property name="resultSetColumn">registration_close</property>
+                    <data id="182">
+                        <property name="resultSetColumn">registration_close_date</property>
                     </data>
                 </cell>
             </row>
