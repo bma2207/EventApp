@@ -14,7 +14,7 @@
 	</grid>
 
 	<form name="address-form" title="Address" model="com.axelor.event.db.Address">
-		<panel title="Address">
+		<panel name="addressPanel" title="Address">
 			<field name="flatHouseNo" />
 			<field name="street" />
 			<field name="landMark" />

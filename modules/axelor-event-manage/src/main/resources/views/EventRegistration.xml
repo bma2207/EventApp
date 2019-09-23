@@ -9,7 +9,6 @@
 		<field name="event" />
 		<field name="name" />
 		<field name="email" widget="email" />
-		<field name="address" css="address-list" />
 		<field name="capacity" />
 		<field name="registrationDateT" />
 		<field name="amount" />
@@ -18,32 +17,13 @@
 
 	<form name="eventRegistration-form" title="Event Registration"
 		model="com.axelor.event.db.EventRegistration" onSave="action-validation-check-totalEntry-capacity"
-		onNew="action-method-set-event">
-		
-		<panel title="Event Registration">
+		onNew="action-event-registration-method-set-event">
+
+		<panel name="eventRegistrationPanel" title="Event Registration">
 			<field name="event" onChange="action-validation-check-totalEntry-capacity" />
 			<field name="name" />
 			<field name="email" widget="email" />
-			<field name="address" colSpan="12" css="address-list">
-				<viewer><![CDATA[
-        <address>
-        {{record.beforeDays}} {{record.discountPercent}}<br>
-        {{record.discountAmount}}, {{record.flatHouseNo}}<br>
-        {{record.street}} {{record.landMark}}<br>
-        {{record.city}}, {{record.country}}<br>
-        {{record.fullName}}
-        </address>
-        ]]>
-        </viewer>
-				<editor x-show-titles="false">
-					<field name="flatHouseNo" />
-					<field name="street" />
-					<field name="landMark" />
-					<field name="city" />
-					<field name="country" />
-					<field name="fullName" />
-				</editor>
-			</field>
+			<field name="address" colSpan="12" css="address-list" />
 			<field name="registrationDateT"
 				onChange="action-event-registratin-group-onChange-registrationDate" />
 			<field name="amount" />
@@ -62,22 +42,18 @@
 		<error message="Registration Full !!!" if="event.capacity == event.totalEntry" />
 	</action-validate>
 
-	<action-method name="action-set-amount">
+	<action-method name="action-event-registration-set-amount">
 		<call class="com.axelor.event.web.EventController" method="computeEventRegistartionAmount" />
 	</action-method>
 
-	<action-method name="action-method-event-registration-event-set">
-		<call class="com.axelor.event.web.EventController" method="setEventInRegistration" />
-	</action-method>
-
-	<action-method name="action-method-set-event">
+	<action-method name="action-event-registration-method-set-event">
 		<call class="com.axelor.event.web.EventController" method="eventRegistartionList" />
 	</action-method>
 
 	<action-group
 		name="action-event-registratin-group-onChange-registrationDate">
 		<action name="action-event-registration-date-validate" />
-		<action name="action-set-amount" />
+		<action name="action-event-registration-set-amount" />
 	</action-group>
-	
+
 </object-views>

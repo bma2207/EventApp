@@ -6,7 +6,6 @@ import com.axelor.event.db.EventRegistration;
 import com.axelor.event.db.repo.EventRepository;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -14,8 +13,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.*;
 
 public class EventServiceImp implements EventSevice {
 
@@ -25,11 +22,10 @@ public class EventServiceImp implements EventSevice {
 
 		BigDecimal fees = BigDecimal.ZERO;
 		BigDecimal discountPer = BigDecimal.ZERO;
-		BigDecimal amount = BigDecimal.ZERO;
 		BigDecimal feesAmount = BigDecimal.ZERO;
 		BigDecimal amounts = BigDecimal.ZERO;
+		BigDecimal value=BigDecimal.ZERO;
 		Integer days = 0;
-
 		List<Event> eventList = Beans.get(EventRepository.class).all()
 				.filter("self.id in (?1) ", eventRegistration.getEvent()).fetch();
 
@@ -48,16 +44,13 @@ public class EventServiceImp implements EventSevice {
 			} else if (discountList.isEmpty()) {
 				amounts = fees;
 			} else {
-				Discount discounts=new Discount();
-				//List<Discount> sortBeforDays = discounts.sort(Comparator.comparing(Discount::getCreatedOn));
 				discountList.sort(Comparator.comparing(Discount::getBeforeDays));
-				for (Discount discount :discountList) {
+				for (Discount discount : discountList) {
 					days = discount.getBeforeDays();
 					if (days >= durations) {
 						discountPer = discount.getDiscountPercent();
-						amount = discount.getDiscountAmount();
-						feesAmount = feesAmount.add(discountPer.multiply(fees)).divide(new BigDecimal(100));
-						amounts = fees.subtract(feesAmount);
+						value = feesAmount.add(discountPer.multiply(fees)).divide(new BigDecimal(100));
+						amounts = fees.subtract(value);
 						break;
 
 					} else {
@@ -74,7 +67,6 @@ public class EventServiceImp implements EventSevice {
 
 	@Override
 	public Event discountCalculation(Event event) {
-		// TODO Auto-generated method stub
 		BigDecimal totalAmount = BigDecimal.ZERO;
 		BigDecimal totalDiscount = BigDecimal.ZERO;
 		List<EventRegistration> eventRegistrationslist = event.getEventRegistrationList();
@@ -97,14 +89,9 @@ public class EventServiceImp implements EventSevice {
 
 	@Override
 	public Discount discountAmount(Event event, Discount discount) {
-		// TODO Auto-generated method stub
+
 		BigDecimal fees = BigDecimal.ZERO;
 		BigDecimal feesAmount = BigDecimal.ZERO;
-		Integer durations = 0;
-		LocalDate dateFrom = event.getRegistrationOpenDate();
-		LocalDate dateTo = event.getRegistrationCloseDate();
-		Period intervalPeriod = Period.between(dateFrom, dateTo);
-		durations = intervalPeriod.getDays();
 		fees = event.getEventFees();
 		BigDecimal percent = discount.getDiscountPercent();
 		feesAmount = feesAmount.add(percent.multiply(fees)).divide(new BigDecimal(100));
@@ -114,16 +101,14 @@ public class EventServiceImp implements EventSevice {
 
 	@Override
 	public List<EventRegistration> eventRegListCalculationOnimport(Event event) {
-		// TODO Auto-generated method stub
 		BigDecimal fees = BigDecimal.ZERO;
 		BigDecimal discountPer = BigDecimal.ZERO;
-		BigDecimal amount = BigDecimal.ZERO;
 		BigDecimal feesAmount = BigDecimal.ZERO;
 		BigDecimal amounts = BigDecimal.ZERO;
+		BigDecimal value=BigDecimal.ZERO;
 		Integer days = 0;
-
-		 List<EventRegistration> eventRegistrations = new ArrayList<EventRegistration>();
-		//EventRegistration eventRegistration=new EventRegistration();
+		List<EventRegistration> eventRegistrations = new ArrayList<EventRegistration>();
+	
 		for (EventRegistration eventRegistration : event.getEventRegistrationList()) {
 			fees = event.getEventFees();
 			Integer durations = 0;
@@ -139,24 +124,20 @@ public class EventServiceImp implements EventSevice {
 			} else if (discountList.isEmpty()) {
 				amounts = fees;
 			} else {
-
+				discountList.sort(Comparator.comparing(Discount::getBeforeDays));
 				for (Discount discount : discountList) {
 					days = discount.getBeforeDays();
-					if (days <= durations) {
+					if (days >= durations) {
 						discountPer = discount.getDiscountPercent();
-						amount = discount.getDiscountAmount();
-						feesAmount = feesAmount.add(discountPer.multiply(fees)).divide(new BigDecimal(100));
-						amounts = fees.subtract(feesAmount);
+						value = feesAmount.add(discountPer.multiply(fees)).divide(new BigDecimal(100));
+						amounts = fees.subtract(value);
 						break;
 
 					} else {
 						amounts = fees;
-						
 					}
-
 				}
 			}
-
 			eventRegistration.setAmount(amounts);
 			eventRegistrations.add(eventRegistration);
 		}

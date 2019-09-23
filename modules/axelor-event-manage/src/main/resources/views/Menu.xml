@@ -5,7 +5,7 @@
   http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<menuitem name="event-root" title="Event Manage" />
-	
+
 	<menuitem name="event-root-event" parent="event-root" title="Event"
 		action="event.all" />
 
@@ -34,5 +34,5 @@
 		<view type="grid" name="address-grid" />
 		<view type="form" name="address-form" />
 	</action-view>
-	
+
 </object-views>
