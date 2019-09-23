@@ -56,7 +56,7 @@
 	</cards>
 
 	<form name="event-form" title="Event" model="com.axelor.event.db.Event"
-		onSave="action-group-onSave" onLoad="action-attrs-total-entry,action-method-event-RegistrationList-CalculationOnImport,action-method-event-registration-culculation">
+		onLoad="action-attrs-total-entry,action-method-event-RegistrationList-CalculationOnImport,action-method-event-registration-culculation">
 		<toolbar>
 			<button name="showEvent" title="Event Details" icon="fa-print"
 				onClick="action-event-report" readonlyIf="!id" />
@@ -68,8 +68,10 @@
 
 		<panel title="Overview">
 			<field name="reference" />
-			<field name="startDateT" onChange="action-event-Startdate-validate" />
-			<field name="endDateT" onChange="action-event-Enddate-validate"
+			<field name="startDateT"
+				onChange="action-event-attrs-setNullDate,action-event-validate-startDatet" />
+			<field name="endDateT"
+				onChange="action-event-attrs-setNullDate,action-event-Enddate-validate"
 				help="Start date should not be ahead of EndDate." />
 			<field name="address" colSpan="12" css="address-list">
 				<viewer><![CDATA[
@@ -92,8 +94,10 @@
 					<field name="fullName" />
 				</editor>
 			</field>
-			<field name="registrationOpenDate" onChange="action-event-registrationOpen-date-validate,save" />
-			<field name="registrationCloseDate" onChange="action-event-registrationClose-date-validate"
+			<field name="registrationOpenDate"
+				onChange="action-event-attrs-setNullDate,action-event-validate-registrationOpen-date,save" />
+			<field name="registrationCloseDate"
+				onChange="action-event-attrs-setNullDate,action-event-registrationClose-date-validate"
 				help="Registration Open date should not be ahead of Registration Close Date." />
 			<field name="capacity" onChange="save" />
 			<field name="totalEntry" onChange="save" />
@@ -130,9 +134,9 @@
 		<view-param name="popup" value="reload" />
 	</action-view>
 
-	<action-validate name="action-event-Startdate-validate">
+	<action-validate name="action-event-validate-startDatet">
 		<error message="Start date should not be ahead of EndDate."
-			if="startDate &gt; endDateT  &amp;&amp;  endDateT != null" />
+			if=" endDateT != null &amp;&amp; startDate &gt; endDateT   " />
 		<error message="Registration close date must be befor event Start."
 			if=" registrationCloseDate != null  &amp;&amp; registrationCloseDate &gt; startDateT.toLocalDate()   " />
 	</action-validate>
@@ -142,7 +146,18 @@
 			if="startDateT != null &amp;&amp; startDateT &gt; endDateT" />
 	</action-validate>
 
-	<action-validate name="action-event-registrationOpen-date-validate">
+	<action-attrs name="action-event-attrs-setNullDate">
+		<attribute if="startDateT != null &amp;&amp; startDateT &gt; endDateT"
+			name="value" expr="eval:null" for="endDateT" />
+		<attribute name="value" for="startDateT" expr="eval:null"
+			if="endDateT != null &amp;&amp; startDate &gt; endDateT" />
+		<attribute name="value" for="registrationCloseDate" expr="eval:null"
+			if="registrationCloseDate != null  &amp;&amp; registrationCloseDate &gt; startDateT.toLocalDate()" />
+		<attribute name="value" for="registrationOpenDate" expr="eval:null"
+			if="registrationCloseDate != null  &amp;&amp; registrationOpenDate &gt; registrationCloseDate" />
+	</action-attrs>
+
+	<action-validate name="action-event-validate-registrationOpen-date">
 		<error
 			message="Registration Open date should not be ahead of Registration Close Date."
 			if="registrationCloseDate != null  &amp;&amp; registrationOpenDate &gt; registrationCloseDate" />
@@ -162,15 +177,11 @@
 		<check field="totalEntry" if="totalEntry &gt; capacity" error="Registration is close." />
 	</action-condition>
 
-	<action-group name="action-group-onSave">
-		<action name="action-event-Startdate-validate" />
-		<action name="action-event-Enddate-validate" />
-		<action name="action-event-registrationOpen-date-validate" />
-		<action name="action-event-registrationClose-date-validate" />
-		<action name="action-event-capacity" />
-		<action name="save" />
-	</action-group>
-
+	<!-- <action-group name="action-group-onSave"> <action name="save" /> <action 
+		name="action-event-Startdate-validate" /> <action name="action-event-Enddate-validate" 
+		/> <action name="action-event-registrationOpen-date-validate" /> <action 
+		name="action-event-registrationClose-date-validate" /> <action name="action-event-capacity" 
+		/> <action name="save" /> </action-group> -->
 	<action-group name="action-group-onchangeeventRegistration">
 		<action name="action-attrs-total-entry" />
 		<action name="action-method-event-registration-culculation" />
@@ -178,7 +189,7 @@
 	</action-group>
 
 	<action-method name="action-method-event-registration-culculation">
-		<call class="com.axelor.event.web.EventController" method="totalDiscount" />
+		<call class="com.axelor.event.web.EventController" method="calculateEventTotalDiscount" />
 	</action-method>
 
 	<action-attrs name="action-attrs-total-entry">
@@ -196,7 +207,7 @@
 	</action-method>
 
 	<action-method name="action-send-by-email-method-event-registration">
-		<call class="com.axelor.event.web.EventController" method="sendEmail" />
+		<call class="com.axelor.event.web.EventController" method="sendEmailEventRegistration" />
 	</action-method>
 
 	<action-method

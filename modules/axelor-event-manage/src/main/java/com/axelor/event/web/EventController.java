@@ -26,24 +26,23 @@ public class EventController {
 	@Inject
 	private EventServiceImp service;
 
-	public void compute(ActionRequest request, ActionResponse response) {
+	public void computeEventRegistartionAmount(ActionRequest request, ActionResponse response) {
 
 		EventRegistration enEventRegistration = request.getContext().asType(EventRegistration.class);
 
-		enEventRegistration = service.calculation(enEventRegistration);
+		enEventRegistration = service.amountCalculation(enEventRegistration);
 		response.setValue("amount", enEventRegistration.getAmount());
 	}
 
-	public void totalDiscount(ActionRequest request, ActionResponse response) {
+	public void calculateEventTotalDiscount(ActionRequest request, ActionResponse response) {
 
 		Event event = request.getContext().asType(Event.class);
-
 		event = service.discountCalculation(event);
 		response.setValue("amountCollected", event.getAmountCollected());
 		response.setValue("totalDiscount", event.getTotalDiscount());
 	}
 
-	public void eventSet(ActionRequest request, ActionResponse response) {
+	public void setEventInRegistration(ActionRequest request, ActionResponse response) {
 		EventRegistration registration = request.getContext().asType(EventRegistration.class);
 		Event event = request.getContext().getParent().asType(Event.class);
 		registration.setEvent(event);
@@ -76,7 +75,7 @@ public class EventController {
 		}
 	}
 
-	public void sendEmail(ActionRequest request, ActionResponse response) {
+	public void sendEmailEventRegistration(ActionRequest request, ActionResponse response) {
 
 		Event event = request.getContext().asType(Event.class);
 		List<EventRegistration> eventRegstrationsList = event.getEventRegistrationList();

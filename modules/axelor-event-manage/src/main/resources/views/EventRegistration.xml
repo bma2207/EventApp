@@ -63,11 +63,11 @@
 	</action-validate>
 
 	<action-method name="action-set-amount">
-		<call class="com.axelor.event.web.EventController" method="compute" />
+		<call class="com.axelor.event.web.EventController" method="computeEventRegistartionAmount" />
 	</action-method>
 
 	<action-method name="action-method-event-registration-event-set">
-		<call class="com.axelor.event.web.EventController" method="eventSet" />
+		<call class="com.axelor.event.web.EventController" method="setEventInRegistration" />
 	</action-method>
 
 	<action-method name="action-method-set-event">

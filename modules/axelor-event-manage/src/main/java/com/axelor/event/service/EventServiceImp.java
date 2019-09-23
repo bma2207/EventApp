@@ -20,7 +20,7 @@ import java.util.*;
 public class EventServiceImp implements EventSevice {
 
 	@Override
-	public EventRegistration calculation(EventRegistration eventRegistration) {
+	public EventRegistration amountCalculation(EventRegistration eventRegistration) {
 		// TODO Auto-generated method stub
 
 		BigDecimal fees = BigDecimal.ZERO;
