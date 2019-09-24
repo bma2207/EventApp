@@ -29,8 +29,8 @@ public class EventController {
 	public void computeEventRegistartionAmount(ActionRequest request, ActionResponse response) {
 
 		EventRegistration enEventRegistration = request.getContext().asType(EventRegistration.class);
-
-		enEventRegistration = service.amountCalculation(enEventRegistration);
+		Event event=request.getContext().getParent().asType(Event.class);
+		enEventRegistration = service.amountCalculation(enEventRegistration,event);
 		response.setValue("amount", enEventRegistration.getAmount());
 	}
 
@@ -96,8 +96,9 @@ public class EventController {
 							
 						}
 						response.setFlash("Email Sent successfully");
+						eventRegistered.setIsEmailSent(true);
 					}
-					eventRegistered.setIsEmailSent(true);
+					
 
 				}
 

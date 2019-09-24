@@ -33,7 +33,7 @@ public class EventRegistrationServiceImp implements EventRegistrationService {
 			InputStream bindFileInputStream = this.getClass().getResourceAsStream("/data/" + "input-config.xml");
 
 			if (bindFileInputStream == null) {
-				
+
 			}
 
 			FileOutputStream outputStream = new FileOutputStream(configFile);

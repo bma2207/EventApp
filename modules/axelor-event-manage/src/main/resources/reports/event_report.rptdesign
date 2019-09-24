@@ -93,10 +93,22 @@
                     <text-property name="heading">email</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">address</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">address</text-property>
-                    <text-property name="heading">address</text-property>
+                    <property name="columnName">street</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">street</text-property>
+                    <text-property name="heading">street</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">city</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">city</text-property>
+                    <text-property name="heading">city</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">country</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">country</text-property>
+                    <text-property name="heading">country</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">amount</property>
@@ -157,11 +169,21 @@
                     </structure>
                     <structure>
                         <property name="position">8</property>
-                        <property name="name">address</property>
-                        <property name="dataType">decimal</property>
+                        <property name="name">street</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
+                        <property name="name">city</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">country</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
                         <property name="name">amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -220,22 +242,39 @@
                 </structure>
                 <structure>
                     <property name="position">8</property>
-                    <property name="name">address</property>
-                    <property name="nativeName">address</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="name">street</property>
+                    <property name="nativeName">street</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
+                    <property name="name">city</property>
+                    <property name="nativeName">city</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">country</property>
+                    <property name="nativeName">country</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
                     <property name="name">amount</property>
                     <property name="nativeName">amount</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select event.reference,event.start_datet,event.end_datet,event.registration_open_date,event.registration_close_date,
-registration.name,registration.email,registration.address,registration.amount from 
-event_event event inner join event_event_registration registration on registration.event = event.id
+            <xml-property name="queryText"><![CDATA[select event.reference,event.start_datet,event.end_datet,
+event.registration_open_date,event.registration_close_date,
+registration.name,registration.email,address.street,address.city,
+address.country,registration.amount from event_event event 
+inner join event_event_registration registration on registration.event = event.id 
+inner join event_address address on address.id=registration.address
 where event.id = ?]]></xml-property>
         </oda-data-set>
     </data-sets>
@@ -325,7 +364,7 @@ where event.id = ?]]></xml-property>
                     </label>
                 </cell>
                 <cell id="68">
-                    <data id="178">
+                    <data id="190">
                         <property name="resultSetColumn">reference</property>
                     </data>
                 </cell>
@@ -338,7 +377,7 @@ where event.id = ?]]></xml-property>
                     </label>
                 </cell>
                 <cell id="71">
-                    <data id="179">
+                    <data id="191">
                         <property name="resultSetColumn">start_datet</property>
                     </data>
                 </cell>
@@ -351,7 +390,7 @@ where event.id = ?]]></xml-property>
                     </label>
                 </cell>
                 <cell id="74">
-                    <data id="180">
+                    <data id="192">
                         <property name="resultSetColumn">end_datet</property>
                     </data>
                 </cell>
@@ -364,7 +403,7 @@ where event.id = ?]]></xml-property>
                     </label>
                 </cell>
                 <cell id="77">
-                    <data id="181">
+                    <data id="193">
                         <property name="resultSetColumn">registration_open_date</property>
                     </data>
                 </cell>
@@ -377,7 +416,7 @@ where event.id = ?]]></xml-property>
                     </label>
                 </cell>
                 <cell id="80">
-                    <data id="182">
+                    <data id="194">
                         <property name="resultSetColumn">registration_close_date</property>
                     </data>
                 </cell>
@@ -468,10 +507,22 @@ where event.id = ?]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">address</property>
-                    <text-property name="displayName">address</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["address"]</expression>
-                    <property name="dataType">decimal</property>
+                    <property name="name">street</property>
+                    <text-property name="displayName">street</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["street"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">city</property>
+                    <text-property name="displayName">city</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["city"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">country</property>
+                    <text-property name="displayName">country</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["country"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">amount</property>
@@ -480,8 +531,32 @@ where event.id = ?]]></xml-property>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">sumOfAmount</property>
-                    <property name="dataType">decimal</property>
+                    <property name="name">Aggregation</property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">FIRST</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["street"]+row["city"]+row["country"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_1</property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["amount"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_2</property>
+                    <property name="dataType">float</property>
                     <property name="aggregateFunction">SUM</property>
                     <list-property name="arguments">
                         <structure>
@@ -499,22 +574,30 @@ where event.id = ?]]></xml-property>
             <detail>
                 <row id="112">
                     <cell id="113">
-                        <data id="168">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <data id="185">
                             <property name="resultSetColumn">name</property>
                         </data>
                     </cell>
                     <cell id="114">
-                        <data id="169">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <data id="186">
                             <property name="resultSetColumn">email</property>
                         </data>
                     </cell>
                     <cell id="115">
-                        <data id="170">
-                            <property name="resultSetColumn">address</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <data id="196">
+                            <property name="resultSetColumn">street</property>
                         </data>
                     </cell>
                     <cell id="116">
-                        <data id="171">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <data id="187">
                             <property name="resultSetColumn">amount</property>
                         </data>
                     </cell>
@@ -522,20 +605,32 @@ where event.id = ?]]></xml-property>
             </detail>
             <footer>
                 <row id="117">
-                    <cell id="118"/>
-                    <cell id="119"/>
-                    <cell id="120"/>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">medium</property>
+                    <cell id="118">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">medium</property>
+                    </cell>
+                    <cell id="119">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">medium</property>
+                    </cell>
+                    <cell id="120">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <label id="197">
+                            <property name="fontWeight">bold</property>
+                            <property name="textUnderline">underline</property>
+                            <text-property name="text">Total fees Collected</text-property>
+                        </label>
+                    </cell>
                     <cell id="121">
-                        <data id="177">
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">medium</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">medium</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">medium</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">medium</property>
-                            <property name="resultSetColumn">sumOfAmount</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <data id="195">
+                            <property name="fontWeight">bold</property>
+                            <property name="textUnderline">underline</property>
+                            <property name="resultSetColumn">Aggregation_2</property>
                         </data>
                     </cell>
                 </row>
