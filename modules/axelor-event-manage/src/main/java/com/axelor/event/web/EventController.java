@@ -1,9 +1,5 @@
 package com.axelor.event.web;
 
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.EmailAccountRepository;
-import com.axelor.apps.message.service.MessageService;
 import com.axelor.event.db.Discount;
 import com.axelor.event.db.Event;
 import com.axelor.event.db.EventRegistration;
@@ -15,14 +11,13 @@ import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
+
 
 public class EventController {
-	@Inject
-	private MessageService messageService;
+	
 	@Inject
 	private EventServiceImp service;
 
@@ -30,7 +25,7 @@ public class EventController {
 
 		EventRegistration enEventRegistration = request.getContext().asType(EventRegistration.class);
 		Event event=request.getContext().getParent().asType(Event.class);
-		enEventRegistration = service.amountCalculation(enEventRegistration,event);
+		enEventRegistration = service.eventRegListCalculationOnimport(enEventRegistration,event);
 		response.setValue("amount", enEventRegistration.getAmount());
 	}
 
@@ -58,54 +53,27 @@ public class EventController {
 
 	}
 
-	public void eventRegistrationListCalculationOnImport(ActionRequest request, ActionResponse response) {
+	public void registrationListCalculationOnImport(ActionRequest request, ActionResponse response) {
 		Event event = request.getContext().asType(Event.class);
+		List<EventRegistration> eventRegstrationsList = event.getEventRegistrationList();
+		List<EventRegistration> updatedList=new ArrayList<>();
 		if (event.getEventRegistrationList() != null) {
-
-			List<EventRegistration> enventRegistration = service.eventRegListCalculationOnimport(event);
-			response.setValue("eventRegistrationList", enventRegistration);
+			for (EventRegistration eventRegistered : eventRegstrationsList) {
+			EventRegistration enventRegistration = service.eventRegListCalculationOnimport(eventRegistered,event);
+			updatedList.add(enventRegistration);
+			
+			}
+			response.setValue("eventRegistrationList", updatedList);
 		}
 	}
 
 	public void sendEmailEventRegistration(ActionRequest request, ActionResponse response) {
 
 		Event event = request.getContext().asType(Event.class);
-		List<EventRegistration> eventRegstrationsList = event.getEventRegistrationList();
-		Set<EmailAddress> emailAddressSet = new HashSet<EmailAddress>();
-		if (eventRegstrationsList != null) {
-
-			for (EventRegistration eventRegistered : eventRegstrationsList) {
-
-				if (eventRegistered.getEmail() != null && !eventRegistered.getIsEmailSent()) {
-					EmailAddress emailAddress = new EmailAddress();
-					emailAddress.setAddress(eventRegistered.getEmail());
-					emailAddressSet.add(emailAddress);
-					if (!emailAddressSet.isEmpty()) {
-						System.out.println(emailAddressSet);
-						Message message = new Message();
-						message.setMailAccount(Beans.get(EmailAccountRepository.class).all().fetchOne());
-						message.setToEmailAddressSet(emailAddressSet);
-						message.setSubject("Regarding event Registration");
-						message.setContent("Hello Dear " + eventRegistered.getName() + " .You are take part in "
-								+ event.getReference() + " Event.the event fees is " + event.getEventFees()
-								+ " Rs. we are happy to inform you. Your Event has been registered successfully  "
-								+ "Thanks");
-						try {
-							messageService.sendByEmail(message);
-						} catch (Exception e) {
-							
-						}
-						response.setFlash("Email Sent successfully");
-						eventRegistered.setIsEmailSent(true);
-					}
-					
-
-				}
-
-			}
-
-		}
-
+		List<EventRegistration> eventRegstrationsList=	service.registrationListMail(event);
+		response.setValue("eventRegistrationList",eventRegstrationsList);
+		response.setFlash("Email Sent successfully");
+		
 	}
 
 	@Inject
@@ -127,4 +95,5 @@ public class EventController {
 		}
 
 	}
+	
 }

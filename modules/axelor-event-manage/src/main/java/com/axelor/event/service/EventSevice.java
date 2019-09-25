@@ -7,8 +7,8 @@ import com.axelor.event.db.Event;
 import com.axelor.event.db.EventRegistration;
 
 public interface EventSevice {
-	public EventRegistration amountCalculation(EventRegistration eventRegistration,Event event);
 	public Event discountCalculation(Event event);
 	public Discount discountAmount(Event event,Discount discount);
-	public List<EventRegistration>  eventRegListCalculationOnimport(Event event);
+	public EventRegistration  eventRegListCalculationOnimport(EventRegistration eventRegistration,Event event);
+	public List<EventRegistration> registrationListMail(Event event);
 }

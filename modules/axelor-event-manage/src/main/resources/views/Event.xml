@@ -186,7 +186,7 @@
 
 	<action-method
 		name="action-event-method-RegistrationList-CalculationOnImport">
-		<call class="com.axelor.event.web.EventController" method="eventRegistrationListCalculationOnImport" />
+		<call class="com.axelor.event.web.EventController" method="registrationListCalculationOnImport" />
 	</action-method>
 
 </object-views>
