@@ -16,7 +16,7 @@
 	</grid>
 
 	<form name="eventRegistration-form" title="Event Registration"
-		model="com.axelor.event.db.EventRegistration" onSave="action-validation-check-totalEntry-capacity"
+		model="com.axelor.event.db.EventRegistration" onSave="action-validation-check-totalEntry-capacity,action-event-registration-method-manage-totalEntry"
 		onNew="action-event-registration-method-set-event">
 
 		<panel name="eventRegistrationPanel" title="Event Registration">
@@ -55,5 +55,9 @@
 		<action name="action-event-registration-date-validate" />
 		<action name="action-event-registration-set-amount" />
 	</action-group>
+	
+	<action-method name="action-event-registration-method-manage-totalEntry">
+	<call class="com.axelor.event.web.EventController" method="manageTotalEntry"/>
+	</action-method>
 
 </object-views>

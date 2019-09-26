@@ -48,31 +48,32 @@
 	</cards>
 
 	<form name="event-form" title="Event" model="com.axelor.event.db.Event"
-		onLoad="action-event-group-on-load">
+		onLoad="action-event-group-on-load,action-event-method-import-datasize" width="large" onSave="action-event-group-validate-fields">
 		<toolbar>
 			<button name="showEvent" title="Event Details" icon="fa-print"
 				onClick="action-event-report" readonlyIf="!id" />
 			<button name="import" title="Import" icon="fa-print"
-				onClick="action-base-view-import-event-popup" readonlyIf="!id" />
+				onClick="action-base-view-import-event-popup" readonlyIf="!id || totalEntry == capacity" />
 			<button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
-				onClick="action-event-method-event-registration-sendEmail" readonlyIf="!id" />
+				onClick="action-event-method-event-registration-sendEmail"
+				readonlyIf="!id" />
 		</toolbar>
 
 		<panel name="eventPanel" title="Event">
 			<field name="reference" />
 			<field name="startDateT"
-				onChange="action-event-attrs-re-set-date,action-event-validate-startDatet" />
+				onChange="action-event-attrs-re-set-date,action-event-condition-startDatet" />
 			<field name="endDateT"
-				onChange="action-event-attrs-re-set-date,action-event-validate-Enddate"
+				onChange="action-event-attrs-re-set-date,action-event-condition-Enddate"
 				help="Start date should not be ahead of EndDate." />
 			<field name="address" colSpan="12" css="address-list" />
 			<field name="registrationOpenDate"
-				onChange="action-event-attrs-re-set-date,action-event-validate-registrationOpen-date,save" />
+				onChange="action-event-attrs-re-set-date,action-event-condition-registrationOpen-date" />
 			<field name="registrationCloseDate"
-				onChange="action-event-attrs-re-set-date,action-event-validate-registrationClose-date"
+				onChange="action-event-attrs-re-set-date,action-event-condition-registrationClose-date"
 				help="Registration Open date should not be ahead of Registration Close Date." />
-			<field name="capacity" onChange="save" />
-			<field name="totalEntry" onChange="save" />
+			<field name="capacity" />
+			<field name="totalEntry" />
 			<field name="eventFees" />
 			<field name="description" widget="html" colSpan="12" />
 			<field name="discountList" onChange="save" colSpan="12" />
@@ -105,17 +106,50 @@
 		<view-param name="popup" value="reload" />
 	</action-view>
 
-	<action-validate name="action-event-validate-startDatet">
-		<error message="Start date should not be ahead of EndDate."
-			if=" endDateT != null &amp;&amp; startDate &gt; endDateT   " />
-		<error message="Registration close date must be befor event Start."
-			if=" registrationCloseDate != null  &amp;&amp; registrationCloseDate &gt; startDateT.toLocalDate()   " />
-	</action-validate>
+	<action-condition name="action-event-condition-startDatet">
+		<check field="endDateT" />
+		<check field="startDateT" />
+		<check field="startDateT" error="Start date should not be ahead of EndDate."
+			if="endDateT != null &amp;&amp; startDateT &gt; endDateT " />
+		<check field="startDateT"
+			error="Registration close date must be befor event Start."
+			if=" registrationCloseDate != null  &amp;&amp; registrationCloseDate &gt; startDateT.toLocalDate()" />
+	</action-condition>
 
-	<action-validate name="action-event-validate-Enddate">
-		<error message="EndDate should not be ahead of startDate."
+	<action-condition name="action-event-condition-Enddate">
+		<check field="endDateT" />
+		<check field="startDateT" />
+		<check field="endDateT" error="EndDate should not be ahead of startDate."
 			if="startDateT != null &amp;&amp; startDateT &gt; endDateT" />
-	</action-validate>
+	</action-condition>
+
+	<action-condition name="action-event-condition-registrationOpen-date">
+		<check field="registrationOpenDate" />
+		<check field="registrationCloseDate" />
+		<check field="startDateT" />
+		<check field="registrationOpenDate"
+			error="Registration Open date should not be ahead of Registration Close Date."
+			if="registrationCloseDate != null  &amp;&amp; registrationOpenDate &gt; registrationCloseDate" />
+		<check field="registrationOpenDate" error="Registration open date must be befor event Start."
+			if="startDateT != null &amp;&amp; registrationOpenDate &gt; startDateT.toLocalDate()" />
+	</action-condition>
+
+	<action-condition name="action-event-condition-registrationClose-date">
+		<check field="registrationOpenDate" />
+		<check field="registrationCloseDate" />
+		<check field="startDateT" />
+		<check field="registrationCloseDate"
+			error="Registration Close Date should not be Less than Registration Open date OR start date."
+			if="registrationCloseDate &gt; startDateT.toLocalDate() &amp;&amp; registrationOpenDate &gt; registrationCloseDate" />
+
+	</action-condition>
+
+	<action-group name="action-event-group-validate-fields">
+		<action name="action-event-condition-registrationClose-date" />
+		<action name="action-event-condition-registrationOpen-date" />
+		<action name="action-event-condition-Enddate" />
+		<action name="action-event-condition-startDatet" />
+	</action-group>
 
 	<action-attrs name="action-event-attrs-re-set-date">
 		<attribute if="startDateT != null &amp;&amp; startDateT &gt; endDateT"
@@ -127,20 +161,6 @@
 		<attribute name="value" for="registrationOpenDate" expr="eval:null"
 			if="registrationCloseDate != null  &amp;&amp; registrationOpenDate &gt; registrationCloseDate" />
 	</action-attrs>
-
-	<action-validate name="action-event-validate-registrationOpen-date">
-		<error
-			message="Registration Open date should not be ahead of Registration Close Date."
-			if="registrationCloseDate != null  &amp;&amp; registrationOpenDate &gt; registrationCloseDate" />
-	</action-validate>
-
-	<action-validate name="action-event-validate-registrationClose-date">
-		<error
-			message="Registration Close Date should not be Less than Registration Open date."
-			if="registrationOpenDate != null &amp;&amp; registrationOpenDate &gt; registrationCloseDate" />
-		<error message="Registration close date must be befor event Start."
-			if="startDateT != null &amp;&amp; registrationCloseDate &gt; startDateT.toLocalDate()" />
-	</action-validate>
 
 	<action-condition name="action-event-condition-capacity-check">
 		<check field="totalEntry" />
@@ -187,6 +207,10 @@
 	<action-method
 		name="action-event-method-RegistrationList-CalculationOnImport">
 		<call class="com.axelor.event.web.EventController" method="registrationListCalculationOnImport" />
+	</action-method>
+	
+	<action-method name="action-event-method-import-datasize">
+	<call class="com.axelor.event.web.EventController" method="csvImportCapacity"/>
 	</action-method>
 
 </object-views>

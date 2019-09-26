@@ -40,7 +40,6 @@ public class EventServiceImp implements EventSevice {
 		LocalDate regdate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		Period registrationDate = Period.between(regdate, dateTo);
 		durations = registrationDate.getDays();
-
 		List<Discount> discountList = event.getDiscountList();
 		if (event.getEventFees() == null) {
 			amounts = fees;
@@ -58,6 +57,7 @@ public class EventServiceImp implements EventSevice {
 				}
 			}
 		}
+		
 		eventRegistration.setAmount(amounts);
 
 		return eventRegistration;

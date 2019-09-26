@@ -8,21 +8,34 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import com.axelor.data.Importer;
 import com.axelor.data.csv.CSVImporter;
+import com.axelor.event.db.Event;
+import com.axelor.event.db.EventRegistration;
+import com.axelor.event.db.repo.EventRepository;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.inject.Inject;
 
 public class EventRegistrationServiceImp implements EventRegistrationService {
+	@Inject
+	EventRepository eventRepository;
+
 	@Override
 	public void importCsv(MetaFile dataFile, Integer id) {
-
+		
 		File configXmlFile = this.getConfigXmlFile();
 		File CsvFile = MetaFiles.getPath(dataFile).toFile();
+
+		
 		Map<String, Object> context = new HashMap<String, Object>();
 		context.put("_event_id", id);
 		Importer importer = new CSVImporter(configXmlFile.getAbsolutePath(), CsvFile.getParent().toString());
+
 		importer.setContext(context);
 		importer.run();
 	}
+
+	
 
 	private File getConfigXmlFile() {
 
@@ -45,4 +58,15 @@ public class EventRegistrationServiceImp implements EventRegistrationService {
 		}
 		return configFile;
 	}
+
+	@Override
+	public void manageTotalEntry(EventRegistration eventRegistration) {
+		Event event = (Beans.get(EventRepository.class).all().filter("self.id=?", eventRegistration.getEvent())
+				.fetchOne());
+		Integer totalEntry = event.getTotalEntry() + 1;
+		event.setTotalEntry(totalEntry);
+		eventRepository.save(event);
+
+	}
+
 }

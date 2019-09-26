@@ -4,6 +4,7 @@ import com.axelor.event.db.Discount;
 import com.axelor.event.db.Event;
 import com.axelor.event.db.EventRegistration;
 import com.axelor.event.service.EventRegistrationService;
+import com.axelor.event.service.EventRegistrationServiceImp;
 import com.axelor.event.service.EventServiceImp;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -11,21 +12,23 @@ import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-
 public class EventController {
-	
+
 	@Inject
 	private EventServiceImp service;
+	@Inject
+	EventRegistrationServiceImp registrationService;
 
 	public void computeEventRegistartionAmount(ActionRequest request, ActionResponse response) {
 
 		EventRegistration enEventRegistration = request.getContext().asType(EventRegistration.class);
-		Event event=request.getContext().getParent().asType(Event.class);
-		enEventRegistration = service.eventRegListCalculationOnimport(enEventRegistration,event);
+		enEventRegistration = service.eventRegListCalculationOnimport(enEventRegistration,
+				enEventRegistration.getEvent());
 		response.setValue("amount", enEventRegistration.getAmount());
 	}
 
@@ -56,12 +59,12 @@ public class EventController {
 	public void registrationListCalculationOnImport(ActionRequest request, ActionResponse response) {
 		Event event = request.getContext().asType(Event.class);
 		List<EventRegistration> eventRegstrationsList = event.getEventRegistrationList();
-		List<EventRegistration> updatedList=new ArrayList<>();
+		List<EventRegistration> updatedList = new ArrayList<>();
 		if (event.getEventRegistrationList() != null) {
 			for (EventRegistration eventRegistered : eventRegstrationsList) {
-			EventRegistration enventRegistration = service.eventRegListCalculationOnimport(eventRegistered,event);
-			updatedList.add(enventRegistration);
-			
+				EventRegistration enventRegistration = service.eventRegListCalculationOnimport(eventRegistered, event);
+				updatedList.add(enventRegistration);
+
 			}
 			response.setValue("eventRegistrationList", updatedList);
 		}
@@ -70,10 +73,10 @@ public class EventController {
 	public void sendEmailEventRegistration(ActionRequest request, ActionResponse response) {
 
 		Event event = request.getContext().asType(Event.class);
-		List<EventRegistration> eventRegstrationsList=	service.registrationListMail(event);
-		response.setValue("eventRegistrationList",eventRegstrationsList);
+		List<EventRegistration> eventRegstrationsList = service.registrationListMail(event);
+		response.setValue("eventRegistrationList", eventRegstrationsList);
 		response.setFlash("Email Sent successfully");
-		
+
 	}
 
 	@Inject
@@ -95,5 +98,25 @@ public class EventController {
 		}
 
 	}
+
+	@Transactional
+	public void manageTotalEntry(ActionRequest request, ActionResponse response) {
+		EventRegistration eventRegistration = request.getContext().asType(EventRegistration.class);
+		registrationService.manageTotalEntry(eventRegistration);
+	}
 	
+//this method help to import only under capacity record not much more
+	
+	public void csvImportCapacity(ActionRequest request, ActionResponse response) {
+		Event event = request.getContext().asType(Event.class);
+		List<EventRegistration> registrationList = event.getEventRegistrationList();
+		if (event.getCapacity() < registrationList.size()) {
+			for (int i = event.getCapacity(); i <= registrationList.size(); i++) {
+				registrationList.remove(i);
+			}
+			event.setEventRegistrationList(registrationList);
+			response.setValue("eventRegistrationList", registrationList);
+		}
+	}
+
 }
