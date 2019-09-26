@@ -104,21 +104,22 @@ public class EventController {
 		EventRegistration eventRegistration = request.getContext().asType(EventRegistration.class);
 		registrationService.manageTotalEntry(eventRegistration);
 	}
-	
-//this method help to import only under capacity record not much more
-	
+
+	// this method help to import only under capacity record not much more
+
 	public void csvImportCapacity(ActionRequest request, ActionResponse response) {
 		Event event = request.getContext().asType(Event.class);
 		List<EventRegistration> registrationList = event.getEventRegistrationList();
+		List<EventRegistration> updateList=new ArrayList<>();
 		if (event.getCapacity() < registrationList.size()) {
-			int start=event.getCapacity();
-			int end=registrationList.size() - 1;
-			for (int i = start; i <end ; i++) {
-				registrationList.remove(i);
+			int start = event.getCapacity();
+			for (int i = 0; i < start; i++) {
+				updateList.add(registrationList.get(i));
+				
 			}
-			event.setEventRegistrationList(registrationList);
-			response.setValue("eventRegistrationList", registrationList);
+			response.setValue("eventRegistrationList", updateList);
 		}
+		
 	}
 
 }

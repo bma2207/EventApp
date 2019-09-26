@@ -6,7 +6,7 @@
 		<option name="format" value="dd/MM/yyyy HH:mm" />
 	</adapter>
 	<input file="EventRegistrations.csv" separator=";"
-		type="com.axelor.event.db.EventRegistration">
+		type="com.axelor.event.db.EventRegistration" call="com.axelor.event.csv.script.ImportScripat:ImportEvent">
 		<bind column="event" to="event"></bind>
 		<bind to="event" search="self.id = :_event_id" update="true" />
 		<bind column="registrationDateT" to="registrationDateT"  adapter="LocalDateTime"/>

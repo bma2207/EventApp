@@ -48,7 +48,7 @@
 	</cards>
 
 	<form name="event-form" title="Event" model="com.axelor.event.db.Event"
-		onLoad="action-event-group-on-load,action-event-method-import-datasize" width="large" onSave="action-event-group-validate-fields">
+		onLoad="action-event-group-on-load" width="large" onSave="action-event-group-validate-fields">
 		<toolbar>
 			<button name="showEvent" title="Event Details" icon="fa-print"
 				onClick="action-event-report" readonlyIf="!id" />
@@ -170,6 +170,7 @@
 
 	<action-group name="action-event-group-on-load">
 		<action name="save" />
+		<action name="action-event-method-import-datasize"/>
 		<action name="action-evet-attrs-total-entry" />
 		<action name="action-event-method-RegistrationList-CalculationOnImport" />
 		<action name="action-event-method-event-registration-culculation" />
