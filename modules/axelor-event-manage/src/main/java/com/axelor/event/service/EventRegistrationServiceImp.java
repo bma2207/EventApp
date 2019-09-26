@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
+
+import com.axelor.common.FileUtils;
 import com.axelor.data.Importer;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.event.db.Event;
@@ -30,9 +32,9 @@ public class EventRegistrationServiceImp implements EventRegistrationService {
 		Map<String, Object> context = new HashMap<String, Object>();
 		context.put("_event_id", id);
 		Importer importer = new CSVImporter(configXmlFile.getAbsolutePath(), CsvFile.getParent().toString());
-
 		importer.setContext(context);
 		importer.run();
+		this.deleteTempFiles(configXmlFile, CsvFile);
 	}
 
 	
@@ -59,6 +61,21 @@ public class EventRegistrationServiceImp implements EventRegistrationService {
 		return configFile;
 	}
 
+	private void deleteTempFiles(File configXmlFile, File dataCsvFile) {
+
+		   try {
+		     if (configXmlFile.isDirectory() && dataCsvFile.isDirectory()) {
+		       FileUtils.deleteDirectory(configXmlFile);
+		       FileUtils.deleteDirectory(dataCsvFile);
+		     } else {
+		       configXmlFile.delete();
+		       dataCsvFile.delete();
+		     }
+		   } catch (Exception e) {
+		     e.printStackTrace();
+		   }
+		 }
+	
 	@Override
 	public void manageTotalEntry(EventRegistration eventRegistration) {
 		Event event = (Beans.get(EventRepository.class).all().filter("self.id=?", eventRegistration.getEvent())

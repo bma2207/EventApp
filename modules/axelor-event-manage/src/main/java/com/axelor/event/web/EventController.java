@@ -111,7 +111,9 @@ public class EventController {
 		Event event = request.getContext().asType(Event.class);
 		List<EventRegistration> registrationList = event.getEventRegistrationList();
 		if (event.getCapacity() < registrationList.size()) {
-			for (int i = event.getCapacity(); i <= registrationList.size(); i++) {
+			int start=event.getCapacity();
+			int end=registrationList.size() - 1;
+			for (int i = start; i <end ; i++) {
 				registrationList.remove(i);
 			}
 			event.setEventRegistrationList(registrationList);
